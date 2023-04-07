@@ -6,7 +6,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from Shop_db.models import product, shop
 from Shop_db.serializers import ProductSerializer, ShopSerializer
-
+from django.http import JsonResponse
 class ProductList(APIView):
     def get(self, request):
         products = product.objects.all()
@@ -48,18 +48,24 @@ class ProductDetail(APIView):
 
 class ShopList(APIView):
     def get(self, request):
-        shops = shop.objects.all()
-        serializer = ShopSerializer(shops, many=True)
-        return Response(serializer.data)
+       try:
+         products = list(shop.objects.values())
+         return create_response(message = 'List of All Shops', data = products,status_code=status.HTTP_200_OK,status=True,error ="")
+       except  Exception as e:
+        errors = {'message': str(e)}
+        return create_response(message = 'Fetching shops Failed', data ="",status_code=status.HTTP_404_NOT_FOUND,status=False,error =errors)
 
     def post(self, request):
-
-        serializer = ShopSerializer(data=request.data)
-        print(request.data,"data_string")
-        if serializer.is_valid():
+        try:
+         serializer = ShopSerializer(data=request.data)
+         print(serializer,"data_string")
+         if serializer.is_valid():
             serializer.save()
-            return create_response(message = 'shop created', data = request.data,status_code=status.HTTP_201_CREATED,status=True,error = "")
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            return create_response(message = 'shop created', data = request.data,status_code=status.HTTP_201_CREATED,status=True,error ="")
+        except Exception as e:
+            errors = {'message': str(e)}
+            return create_response(message = 'Internal server error', data ="",status_code="",status=False,error=errors)
+       
 
 
 class ShopDetail(APIView):

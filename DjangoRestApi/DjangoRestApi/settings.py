@@ -82,7 +82,7 @@ WSGI_APPLICATION = 'DjangoRestApi.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'djongo',
-        'NAME': 'Shop_database',
+        'NAME': 'Wheretobuy',
         'HOST' : 'localhost',
         'PORT' : 27017
     }
