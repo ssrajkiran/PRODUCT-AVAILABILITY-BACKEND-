@@ -39,7 +39,10 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'corsheaders',
+    'User_login.app.UserLoginConfig',
     'Shop_db.apps.ShopDbConfig'
+    
+    
    
 ]
 CORS_ORIGIN_ALLOW_ALL = True
