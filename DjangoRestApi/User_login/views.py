@@ -1,74 +1,129 @@
-from bson import ObjectId
+from django.conf import settings
 from django.http import JsonResponse
-from pymongo import collection
-from django.views.decorators.csrf import csrf_exempt
-from User_login.response import create_response
-# Create your views here.
-from pymongo import MongoClient
+from grpc import Status
 from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework.exceptions import AuthenticationFailed
 from rest_framework import status
-from User_login.models import user
+from DjangoRestApi.settings import SECRET_KEY
 from User_login.serializers import UserSerializer
-import json
+from User_login.models import user
+import jwt, datetime
+from rest_framework.permissions import IsAuthenticated
 
-class UserList(APIView):
-    def get(self, request):
-        try:
-            products = list(user.objects.values())
-            if not products:
-                return create_response(message = 'Not available', data ="",status_code=status.HTTP_400_BAD_REQUEST,status=False,error="Not available")
-            
-            return create_response(message = 'List of All Shops', data = products,status_code=status.HTTP_201_CREATED,status=True,error = "")
-        except Exception as e:
-            errors = {'message': str(e)}
-            return create_response(message = 'Fetching shops Failed', data ="",status_code=status.HTTP_400_BAD_REQUEST,status=False,error=errors)
-    
+class RegisterView(APIView):
     def post(self, request):
-        try:
-            serializer = UserSerializer(data=request.data)
-            if serializer.is_valid():
-                serializer.save()
-            return create_response(message = 'shop created', data = request.data,status_code=status.HTTP_201_CREATED,status=True,error ="")
-        except Exception as e:
-            errors = {'message': str(e)}
-            return create_response(message = 'Internal server error', data ="",status_code="",status=False,error=errors)
-
-class UserDetail(APIView):
+        serializer = UserSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data)
     
-    def get_object(self, pk):
-            return user.objects.get(pk=pk)
+   
 
-    def get(self, request, pk):
+
+class LoginView(APIView):
+    def post(self, request):
+
+        email = request.data['email']
+        password = request.data['password']
+
+        user_details = user.objects.filter(email=email).first()
+
+        if user_details is None:
+            raise AuthenticationFailed('User not found!')
+
+        if not user_details.check_password(password):
+            raise AuthenticationFailed('Incorrect password!')
+
+        access_token_payload = {
+            'id': user_details.user_id,
+            'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=30),
+            'iat': datetime.datetime.utcnow(),
+            'email' : user_details.email
+        }
+
+        refresh_token_payload = {
+            'id': user_details.user_id,
+            'exp': datetime.datetime.utcnow() + datetime.timedelta(days=7),
+            'iat': datetime.datetime.utcnow(),
+            'email' : user_details.email
+        }
+
+        access_token = jwt.encode(access_token_payload, settings.SECRET_KEY, algorithm='HS256').decode("utf-8")
+
+        refresh_token = jwt.encode(refresh_token_payload, settings.SECRET_KEY, algorithm='HS256').decode("utf-8")
+
+        response = Response()
+
+        response.set_cookie(key='refresh_token', value=refresh_token, httponly=True)
+        response.data = {
+            'access_token': access_token,
+            'refresh_token' : refresh_token
+        }
+        return response
+
+
+
+class UserView(APIView):
+    # permission_classes = [IsAuthenticated]
+  
+    def get(self,request):
         try:
-            shop_obj = self.get_object(pk)
-            serializer = UserSerializer(shop_obj)
-            return create_response(message = 'available', data = serializer.data ,status_code=status.HTTP_200_OK,status=True,error = "")
-        except Exception as e:
-            errors = {'message': str(e)}
-            return create_response(message = 'Not available', data ="",status_code="",status=False,error=errors)
+            jwt_token = request.headers.get('Authorization', '').split(' ')[-1] or request.data.get('token')
             
-    def put(self,request,pk):
+        except:
+             raise Exception 
+        if jwt_token:
+            try:
+                payload = jwt.decode(jwt_token, settings.SECRET_KEY, algorithms='HS256')
+                return Response({'payload': payload}, status=status.HTTP_200_OK)
+            except jwt.ExpiredSignatureError:
+                return Response({'error': 'Token has expired'}, status=status.HTTP_400_BAD_REQUEST)
+            except jwt.InvalidTokenError:
+                return Response({'error': 'Invalid token'}, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response({'error': 'Token not provided'}, status=status.HTTP_400_BAD_REQUEST)
+        
+
+class RefreshView(APIView):
+    permission_classes = [IsAuthenticated]
+    def post(self, request):
+        refresh_token = request.COOKIES.get('refresh_token')
+
+        if not refresh_token:
+            raise AuthenticationFailed('No refresh token!')
+
         try:
-            user_details = user.objects.filter(user_id=pk).first()
-            if user_details is None:
-                return create_response(message = 'Not available in db', data ="",status_code=status.HTTP_404_NOT_FOUND,status=False,error ="")
-            else:
-                user_serializer=UserSerializer(user_details,data=request.data)
-                if user_serializer.is_valid():
-                    user_serializer.save()
-                    return create_response(message = 'Data Updated', data ="",status_code=status.HTTP_200_OK,status=True,error = "")
-        except  Exception as e:
-            errors = {'message': str(e)}
-            return create_response(message = 'Fetching shops Failed', data ="",status_code=status.HTTP_404_NOT_FOUND,status=False,error =errors)
+            payload = jwt.decode(refresh_token, 'refresh_secret', algorithms='HS256')
+        except jwt.ExpiredSignatureError:
+            raise AuthenticationFailed('Expired refresh token!')
+
+        user_detail = user.objects.filter(id=payload['id']).first()
+
+        access_token_payload = {
+            'id': user_detail.user_id,
+            'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=30),
+            'iat': datetime.datetime.utcnow(),
+            'email' : user_detail.email
+        }
+
+        access_token = jwt.encode(access_token_payload, 'access_secret', algorithm='HS256').decode('utf-8')
+
+        response = Response()
+
+        response.data = {
+            'access_token': access_token
+        }
+        return response
 
 
-    def delete(self, request, pk):
-        try:
-            shop_obj = self.get_object(pk)
-            shop_obj.delete()
-            return create_response(message = 'Data delected', data ="",status_code=status.HTTP_200_OK,status=True,error = "")
-        except Exception as e:
-            errors = {'message': str(e)}
-            return create_response(message = 'Not available in the record', data ="",status_code="",status=False,error=errors)
 
 
+class LogoutView(APIView):
+    def post(self, request):
+        response = Response()
+        response.delete_cookie('jwt')
+        response.data = {
+            'message': 'success'
+        }
+        return response
