@@ -41,7 +41,6 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework_jwt',
     'corsheaders',
-    'User_login.app.UserLoginConfig',
     'Shop_db.apps.ShopDbConfig',
  
    
@@ -159,7 +158,7 @@ REST_FRAMEWORK = {
 'rest_framework_simplejwt.authentication.JWTAuthentication',
     ), 
 }
-AUTH_USER_MODEL = 'User_login.user'
+AUTH_USER_MODEL = 'Shop_db.user'
 
 CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOW_CREDENTIALS = True

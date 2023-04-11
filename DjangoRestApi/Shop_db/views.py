@@ -1,23 +1,21 @@
 from bson import ObjectId
-from django.http import JsonResponse
-from pymongo import collection
-from django.views.decorators.csrf import csrf_exempt
 from Shop_db.response import create_response
-# Create your views here.
-from pymongo import MongoClient
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from Shop_db.models import product, shop
+from Shop_db.models import Product, Shop
 from Shop_db.serializers import ProductSerializer, ShopSerializer
-import json
+
+
 class ProductList(APIView):
-    def get(self, request):
-        products = product.objects.all()
+    @staticmethod
+    def get(request):
+        products = Product.objects.all()
         serializer = ProductSerializer(products, many=True)
         return Response(serializer.data)
 
-    def post(self, request):
+    @staticmethod
+    def post(request):
         serializer = ProductSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -25,11 +23,12 @@ class ProductList(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class ProductDetail(APIView):
-    def get_object(self, pk):
+    @staticmethod
+    def get_object(pk):
         try:
-            return product.objects.get(pk=pk)
-        except product.DoesNotExist:
-            raise Http404
+            return Product.objects.get(_id=pk)
+        except Product.DoesNotExist:
+            raise Product
 
     def get(self, request, pk):
         product_obj = self.get_object(pk)
@@ -51,31 +50,45 @@ class ProductDetail(APIView):
 
 
 class ShopList(APIView):
-    def get(self, request):
+    @staticmethod
+    def get(request):
         try:
-            products = list(shop.objects.values())
-            if not products:
-                return create_response(message = 'Not available', data ="",status_code=status.HTTP_400_BAD_REQUEST,status=False,error="Not available")
-            
-            return create_response(message = 'List of All Shops', data = products,status_code=status.HTTP_201_CREATED,status=True,error = "")
+            details_all_user = Shop.objects.all()
+            serializer = ShopSerializer(details_all_user,many=True)
+            if serializer is not None:
+                 return create_response(message = 'List of All Shops', data = serializer.data ,status_code=status.HTTP_201_CREATED,status=True,error = "")
+            else:
+                return create_response(message = 'Data not available', data ="",status_code=status.HTTP_400_BAD_REQUEST,status=False,error="Not available")
         except Exception as e:
             errors = {'message': str(e)}
             return create_response(message = 'Fetching shops Failed', data ="",status_code=status.HTTP_400_BAD_REQUEST,status=False,error=errors)
     
-    def post(self, request):
+   
+    def post(self,request):
         try:
             serializer = ShopSerializer(data=request.data)
             if serializer.is_valid():
                 serializer.save()
-            return create_response(message = 'shop created', data = request.data,status_code=status.HTTP_201_CREATED,status=True,error ="")
+                user_id = serializer.data['_id']
+                return create_response(message = 'shop created', data = ShopList.view_details(user_id), status_code=status.HTTP_201_CREATED, status=True, error ="")
         except Exception as e:
             errors = {'message': str(e)}
-            return create_response(message = 'Internal server error', data ="",status_code="",status=False,error=errors)
+            return create_response(message = 'Internal server error',data ="", status_code=status.HTTP_400_BAD_REQUEST ,status=False,error=errors)
+        
+    
+   
+    def view_details(user_id):
+        print(user_id)
+        obj_id = ObjectId(user_id)
+        shop_obj = Shop.objects.get(_id=obj_id)
+        serializer = ShopSerializer(shop_obj)
+        return serializer.data
 
 class ShopDetail(APIView):
     
-    def get_object(self, pk):
-            return shop.objects.get(pk=pk)
+    @staticmethod
+    def get_object(pk):
+            return Shop.objects.get(pk=pk)
 
     def get(self, request, pk):
         try:
@@ -86,9 +99,11 @@ class ShopDetail(APIView):
             errors = {'message': str(e)}
             return create_response(message = 'Not available', data ="",status_code="",status=False,error=errors)
             
-    def put(self,request,pk):
+    @staticmethod
+    def put(request, pk):
         try:
-            user = shop.objects.filter(shop_id=pk).first()
+            obj_id = ObjectId(pk)
+            user = Shop.objects.filter(_id=obj_id).first()
             if user is None:
                 return create_response(message = 'Not available in db', data ="",status_code=status.HTTP_404_NOT_FOUND,status=False,error ="")
             else:
@@ -103,9 +118,10 @@ class ShopDetail(APIView):
 
     def delete(self, request, pk):
         try:
-            shop_obj = self.get_object(pk)
+            obj_id = ObjectId(pk)
+            shop_obj = self.get_object(obj_id)
             shop_obj.delete()
-            return create_response(message = 'Data delected', data ="",status_code=status.HTTP_200_OK,status=True,error = "")
+            return create_response(message = 'Data deleted', data ="",status_code=status.HTTP_200_OK,status=True,error = "")
         except Exception as e:
             errors = {'message': str(e)}
             return create_response(message = 'Not available in the record', data ="",status_code="",status=False,error=errors)
