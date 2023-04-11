@@ -1,5 +1,5 @@
 from djongo import models
-
+from django.contrib.auth.models import AbstractUser
 
 class product(models.Model):
 
@@ -14,27 +14,21 @@ class product(models.Model):
         
 
 class shop(models.Model):
-    shop_id = models.IntegerField(primary_key=True)
+
     shop_name = models.CharField(max_length=255)
     shop_address = models.TextField(null=True, blank=True)
     product = models.ArrayField(
         model_container=product,
     )
    
-class user(models.Model):
-    user_id  = models.IntegerField(primary_key=True)
+class user(AbstractUser):
     Username = models.CharField(max_length=255)
-    email = models.TextField(null=True, blank=True)
+    email = models.TextField(null=True, unique=True)
     password = models.CharField(max_length=255)
-    
-    class Meta:
-        abstract = True
-    
+    username = None
 
-    def __str__(self):
-        return self.headline
-    
-
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = []
 
 
 

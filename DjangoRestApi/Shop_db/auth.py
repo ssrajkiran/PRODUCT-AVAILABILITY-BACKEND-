@@ -6,24 +6,27 @@ from rest_framework.response import Response
 from rest_framework.exceptions import AuthenticationFailed
 from rest_framework import status
 from DjangoRestApi.settings import SECRET_KEY
-from User_login.serializers import UserSerializer
-from User_login.models import user
+from Shop_db.serializers import UserSerializer
+from Shop_db.models import user
 import jwt, datetime
+from Shop_db.response import create_response
 from rest_framework.permissions import IsAuthenticated
 
 class RegisterView(APIView):
     def post(self, request):
+      try:
         serializer = UserSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
-        return Response(serializer.data)
-    
-   
+        return  create_response(message = 'user signedup successfully!', data =serializer.data,status_code="",status=True,error="")
+      except Exception as e:
+         errors = {'message': str(e)}
+         return  create_response(message = 'user signedup successfully!', data ="",status_code="",status=False,error=errors)
 
-
+         
 class LoginView(APIView):
     def post(self, request):
-
+     try:
         email = request.data['email']
         password = request.data['password']
 
@@ -36,14 +39,12 @@ class LoginView(APIView):
             raise AuthenticationFailed('Incorrect password!')
 
         access_token_payload = {
-            'id': user_details.user_id,
             'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=30),
             'iat': datetime.datetime.utcnow(),
             'email' : user_details.email
         }
 
         refresh_token_payload = {
-            'id': user_details.user_id,
             'exp': datetime.datetime.utcnow() + datetime.timedelta(days=7),
             'iat': datetime.datetime.utcnow(),
             'email' : user_details.email
@@ -58,9 +59,14 @@ class LoginView(APIView):
         response.set_cookie(key='refresh_token', value=refresh_token, httponly=True)
         response.data = {
             'access_token': access_token,
-            'refresh_token' : refresh_token
+            'refresh_token' : refresh_token,
+            'user':user_details
         }
-        return response
+        return  create_response(message = 'user Loggedin successfully!', data = response,status_code="",status=True,error="")
+     except Exception as e:
+        errors = {'message': str(e)}
+        return create_response(message = 'Login Failed!', data = "",status_code="",status=True,error=errors)
+          
 
 
 

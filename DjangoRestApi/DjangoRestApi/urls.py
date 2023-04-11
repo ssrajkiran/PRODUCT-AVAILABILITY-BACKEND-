@@ -19,5 +19,4 @@ from django.conf.urls import url,include
 urlpatterns = [
     path('admin/', admin.site.urls),
     url(r'^',include('Shop_db.urls')),
-    url(r'^',include('User_login.urls'))
 ]
