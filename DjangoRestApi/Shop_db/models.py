@@ -10,14 +10,14 @@ class Product(models.Model):
     product_avail = models.BooleanField()
     
     class Meta:
-        abstract = True
+        abstract =True
    
         
 class Shop(models.Model):
     _id = models.ObjectIdField(primary_key=True, default=ObjectId)
     shop_name = models.CharField(max_length=255)
     shop_address = models.TextField(null=True, blank=True)
-    product = models.ArrayField(
+    product = models.ArrayField (
         model_container=Product,
     )
     

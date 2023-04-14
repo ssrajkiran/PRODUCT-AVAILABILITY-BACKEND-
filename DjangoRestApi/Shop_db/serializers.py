@@ -1,17 +1,24 @@
+import json
 from rest_framework import serializers
 from Shop_db.models import Product, Shop
 from Shop_db.models import User
+from django.db import models
 
 class ProductSerializer(serializers.ModelSerializer):
+    
     class Meta:
         model = Product
         fields = ['product_name','product_description','Brand_name','product_avail']
 
 class ShopSerializer(serializers.ModelSerializer):
+  
+    
+    product = ProductSerializer(many=True)
+
     class Meta:
         model = Shop
         fields = ['_id','shop_name', 'shop_address','product']
-    
+
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
