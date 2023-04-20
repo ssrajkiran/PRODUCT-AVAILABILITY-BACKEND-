@@ -4,6 +4,7 @@ import com.ssrajkiran1.productavailability.controller.BaseController;
 import com.ssrajkiran1.productavailability.model.repo.ProductModel;
 import com.ssrajkiran1.productavailability.model.repo.ShopModel;
 import com.ssrajkiran1.productavailability.model.response.BaseResponseModel;
+import com.ssrajkiran1.productavailability.model.response.mobile.ProductResponseModel;
 import com.ssrajkiran1.productavailability.repository.ProductRepository;
 import com.ssrajkiran1.productavailability.repository.ShopRepository;
 import lombok.extern.log4j.Log4j2;
@@ -25,7 +26,9 @@ public class MobileService extends BaseController {
     @Autowired
     private ProductRepository productRepository;
 
-    public BaseResponseModel<Object> getShop(String shopName, String shop_id) {
+    private ProductModel productModel;
+
+    public BaseResponseModel<Object> getfilterbyShop(String shopName, String shop_id) {
         Optional<ShopModel> shopModelOpt = shopRepository.findByShopNameAndId(shopName, shop_id);
 
         BaseResponseModel<Object> resp = new BaseResponseModel<>();
@@ -33,8 +36,8 @@ public class MobileService extends BaseController {
         if (shopModelOpt.isEmpty()) {
             resp.setStatusCode(HttpStatus.OK.value());
             resp.setStatus(true);
-            resp.setError("Shop Not Found");
-            resp.setMessage("Shop is not available!");
+            resp.setError("ShopIdError");
+            resp.setMessage("Shop Data not Available");
         } else {
 
             List<Object> productDetails = productRepository.getByShopId(shop_id);
@@ -48,7 +51,7 @@ public class MobileService extends BaseController {
             resp.setStatusCode(HttpStatus.OK.value());
             resp.setStatus(true);
             resp.setError("");
-            resp.setMessage("List By Shop");
+            resp.setMessage("Available Product in Shop");
             resp.setData(merglist);
         }
 
@@ -56,11 +59,12 @@ public class MobileService extends BaseController {
     }
 
 
-    public BaseResponseModel<Object> getProduct(String productName) {
-        BaseResponseModel<Object> resp = new BaseResponseModel<>();
+    public BaseResponseModel<ProductResponseModel> getProduct(String productName) {
+        BaseResponseModel<ProductResponseModel> resp = new BaseResponseModel<>();
 
         List<ProductModel> product = productRepository.getByProductName(productName);
-        log.info(product);
+
+
         if (product.isEmpty()) {
             resp.setStatusCode(HttpStatus.OK.hashCode());
             resp.setStatus(true);
@@ -71,17 +75,20 @@ public class MobileService extends BaseController {
             List<String> shopIds = null;
             for (ProductModel p : product) {
                 shopIds = product.stream().map(ProductModel::getShopId).collect(Collectors.toList());
-                // Do something with the shopId value
             }
-            log.info(shopIds);
-
-            List<ShopModel> details = null;
+            List<String> brandname = null;
+            for (ProductModel p : product) {
+                brandname = product.stream().map(ProductModel::getBrandName).collect(Collectors.toList());
+            }
 
             List<ShopModel> shop = shopRepository.getByIdIn(shopIds);
 
-            log.info(shop);
 
-            resp.setData(shop);
+            ProductResponseModel merge= new ProductResponseModel();
+            merge = new ProductResponseModel(shop,productName,brandname);
+
+
+            resp.setData(merge);
             resp.setStatusCode(HttpStatus.OK.hashCode());
             resp.setStatus(true);
             resp.setError("");
@@ -92,6 +99,7 @@ public class MobileService extends BaseController {
         return resp;
 
     }
+
 
 
 }

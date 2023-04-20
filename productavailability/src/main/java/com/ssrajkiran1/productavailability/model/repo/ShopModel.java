@@ -6,6 +6,8 @@ import lombok.*;
 import org.bson.codecs.pojo.annotations.BsonId;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.List;
+
 @Document(collection = "shop")
 @Getter
 @Setter
@@ -26,10 +28,14 @@ public class ShopModel {
     private AddressModal addresses;
 
 
+
     public ShopModel(String userId, String shopId, String shopName, AddressModal addresses) {
         this.userId=userId;
         this.id = shopId;
         this.shopName = shopName;
         this.addresses = addresses;
     }
+
+
+
 }

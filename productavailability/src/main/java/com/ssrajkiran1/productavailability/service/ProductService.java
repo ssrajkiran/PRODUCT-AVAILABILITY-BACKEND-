@@ -35,10 +35,10 @@ public class ProductService {
 
 
             BaseResponseModel<ProductModel> resp = new BaseResponseModel<>();
-            resp.setStatusCode(HttpStatus.OK.hashCode());
+            resp.setStatusCode(HttpStatus.OK.value());
             resp.setStatus(true);
             resp.setError("");
-            resp.setMessage("Product  Fetched Successfully");
+            resp.setMessage("Product Created Successfully");
             resp.setData(details);
             return resp;
         }
@@ -46,10 +46,10 @@ public class ProductService {
         else{
 
             BaseResponseModel<ProductModel> resp = new BaseResponseModel<>();
-            resp.setStatusCode(HttpStatus.UNAUTHORIZED.hashCode());
+            resp.setStatusCode(HttpStatus.UNAUTHORIZED.value());
             resp.setStatus(false);
-            resp.setError("Product Aldready Exists");
-            resp.setMessage("Product data Aldready Found!");
+            resp.setError("ProductIdError");
+            resp.setMessage("Product Already Exists!");
             resp.getData();
             return resp;
 
@@ -64,8 +64,8 @@ public class ProductService {
 
             resp.setStatusCode(HttpStatus.UNAUTHORIZED.hashCode());
             resp.setStatus(false);
-            resp.setError("Database Empty Error");
-            resp.setMessage("Database is empty");
+            resp.setError("ProductIdError");
+            resp.setMessage("No Record Product");
             resp.getData();
 
         }
@@ -78,7 +78,7 @@ public class ProductService {
             resp.setStatusCode(HttpStatus.OK.hashCode());
             resp.setStatus(true);
             resp.setError("");
-            resp.setMessage("Database Fetched Successfully");
+            resp.setMessage("List of Product Database");
             resp.setData(dataList);
 
         }
@@ -86,34 +86,30 @@ public class ProductService {
     }
 
 
-    public boolean shopExists(String id) {
-        return productRepository.existsById(id);
-    }
 
-
-    public BaseResponseModel<ProductModel> deleteProductById(String product_name,String shop_id) {
-
-
-        List<ProductModel> getId = productRepository.getByShopIdAndProductName(shop_id,product_name);
-
-        if (getId.isEmpty()) {
-
-            BaseResponseModel<ProductModel> resp = new BaseResponseModel<>();
-            resp.setStatusCode(HttpStatus.UNAUTHORIZED.hashCode());
-            resp.setStatus(false);
-            resp.setError("Shop Not Found");
-            resp.setMessage("Shop not deleted!");
-            return resp;
-
-        } else {
-
-            shopRepository.deleteById(product_name);
-            BaseResponseModel<ProductModel> resp = new BaseResponseModel<>();
-            resp.setStatusCode(HttpStatus.OK.hashCode());
-            resp.setStatus(true);
-            resp.setError("");
-            resp.setMessage("Successfully Product deleted!");
-            return resp;
-        }
-    }
+//    public BaseResponseModel<ProductModel> deleteProductById(String product_name,String shop_id) {
+//
+//
+//        List<ProductModel> getId = productRepository.getByShopIdAndProductName(shop_id,product_name);
+//
+//        if (getId.isEmpty()) {
+//
+//            BaseResponseModel<ProductModel> resp = new BaseResponseModel<>();
+//            resp.setStatusCode(HttpStatus.UNAUTHORIZED.hashCode());
+//            resp.setStatus(false);
+//            resp.setError("Shop Not Found");
+//            resp.setMessage("Shop not deleted!");
+//            return resp;
+//
+//        } else {
+//
+//            shopRepository.deleteById(product_name);
+//            BaseResponseModel<ProductModel> resp = new BaseResponseModel<>();
+//            resp.setStatusCode(HttpStatus.OK.hashCode());
+//            resp.setStatus(true);
+//            resp.setError("");
+//            resp.setMessage("Successfully Product deleted!");
+//            return resp;
+//        }
+//    }
 }

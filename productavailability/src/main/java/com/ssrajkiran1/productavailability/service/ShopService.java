@@ -26,8 +26,8 @@ public class ShopService {
 
             resp.setStatusCode(HttpStatus.OK.value());
             resp.setStatus(false);
-            resp.setError("Database Empty Error");
-            resp.setMessage("Database is empty");
+            resp.setError("Shop DatabaseEmpty");
+            resp.setMessage("No Record Shop");
             resp.getData();
 
         }
@@ -41,7 +41,7 @@ public class ShopService {
             resp.setStatusCode(HttpStatus.OK.hashCode());
             resp.setStatus(true);
             resp.setError("");
-            resp.setMessage("Shop Database");
+            resp.setMessage("List of Shop Database");
             resp.setData(dataList);
 
         }
@@ -49,27 +49,27 @@ public class ShopService {
     }
 
 
-    public BaseResponseModel<ShopModel> deleteShopById(String id) {
-        Optional<ShopModel> getId = shopRepository.findById(id);
-        if (getId.isEmpty()) {
-
-            BaseResponseModel<ShopModel> resp = new BaseResponseModel<>();
-            resp.setStatusCode(HttpStatus.UNAUTHORIZED.hashCode());
-            resp.setStatus(false);
-            resp.setError("Shop Not Found");
-            resp.setMessage("Shop not deleted!");
-            return resp;
-
-        } else {
-            shopRepository.deleteById(id);
-            BaseResponseModel<ShopModel> resp = new BaseResponseModel<>();
-            resp.setStatusCode(HttpStatus.OK.hashCode());
-            resp.setStatus(true);
-            resp.setError("");
-            resp.setMessage("Successfully Account deleted!");
-            return resp;
-        }
-    }
+//    public BaseResponseModel<ShopModel> deleteShopById(String id) {
+//        Optional<ShopModel> getId = shopRepository.findById(id);
+//        if (getId.isEmpty()) {
+//
+//            BaseResponseModel<ShopModel> resp = new BaseResponseModel<>();
+//            resp.setStatusCode(HttpStatus.UNAUTHORIZED.hashCode());
+//            resp.setStatus(false);
+//            resp.setError("Shop Not Found");
+//            resp.setMessage("Shop not deleted!");
+//            return resp;
+//
+//        } else {
+//            shopRepository.deleteById(id);
+//            BaseResponseModel<ShopModel> resp = new BaseResponseModel<>();
+//            resp.setStatusCode(HttpStatus.OK.hashCode());
+//            resp.setStatus(true);
+//            resp.setError("");
+//            resp.setMessage("Successfully Account deleted!");
+//            return resp;
+//        }
+//    }
 
 
 
@@ -86,7 +86,7 @@ public class ShopService {
             resp.setStatusCode(HttpStatus.OK.value());
             resp.setStatus(true);
             resp.setError("");
-            resp.setMessage("User Account Fetched Successfully");
+            resp.setMessage("Shop Created Successfully");
             resp.setData(data);
 
             return resp;
@@ -95,8 +95,8 @@ public class ShopService {
             BaseResponseModel<ShopModel> resp = new BaseResponseModel<>();
             resp.setStatusCode(HttpStatus.UNAUTHORIZED.value());
             resp.setStatus(false);
-            resp.setError("User Aldready Exists");
-            resp.setMessage("User data Aldready Found!");
+            resp.setError("ShopIdError");
+            resp.setMessage("Shop Already Exists");
 
             return resp;
 

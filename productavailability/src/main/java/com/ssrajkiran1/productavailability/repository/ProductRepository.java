@@ -22,15 +22,17 @@ public interface ProductRepository extends MongoRepository<ProductModel, String>
 
     List<ProductModel> getByShopIdAndProductName(String shopId, String productName);
 
-    
-
-    List<ProductModel> findByShopId(String id);
-
-
-    ProductModel getAllById(String shopId);
-
 
     List<Object> getByShopId(String shopId);
 
-    List<ProductModel> getByProductName(String productName);
+   List<ProductModel> getByProductName(String productName);
+
+
+    ProductModel getByProductNameIn(String productName);
+
+    List<ProductModel> getByShopIdIn(String id);
+
+    List<String> getShopIdsByProductName(String productName);
+
+    List<ProductModel> findByIdAndBrandName(List<String> shopIds, List<String> brand);
 }

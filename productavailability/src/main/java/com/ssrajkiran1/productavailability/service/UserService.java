@@ -8,8 +8,10 @@ import com.ssrajkiran1.productavailability.model.request.UserRequestModel;
 import com.ssrajkiran1.productavailability.model.response.UserResponseModel;
 import com.ssrajkiran1.productavailability.repository.UserRepository;
 import lombok.extern.log4j.Log4j2;
+import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -25,12 +27,15 @@ public class UserService {
     @Autowired
     private PasswordEncoder bCryptPasswordEncoder;
 
+
+
     public BaseResponseModel<UserResponseModel> save(UserRequestModel user) {
 
         if (userExists(user.getEmail())) {
             BaseResponseModel<UserResponseModel> resp = new BaseResponseModel<>();
-            resp.setMessage("User with Email already exists");
+            resp.setMessage("User Account Email already exists");
             resp.setStatus(true);
+            resp.setError("Email Already Found");
             resp.setStatusCode(HttpStatus.OK.value());
             return resp;
         }
@@ -43,7 +48,7 @@ public class UserService {
 
         UserRepoModel savedResp = userRepository.save(userRepoModel);
 
-        return new BaseResponseModel<>(new UserResponseModel(savedResp),"Successful");
+        return new BaseResponseModel<>(new UserResponseModel(savedResp),"User Account Created Successfully");
 
     }
 
@@ -52,34 +57,34 @@ public class UserService {
         List<UserRepoModel> allUsers = userRepository.findAll();
 
         List<UserResponseModel> respModel = allUsers.stream().map(UserResponseModel::new).toList();
-        return new BaseResponseModel<>(respModel,"User Data Fetched");
+        return new BaseResponseModel<>(respModel,"User List Database");
 
     }
 
-    public BaseResponseModel<UserRepoModel> deleteUserById(String id) {
-        UserRepoModel urm = userRepository.findUserById(id);
-        userRepository.delete(urm);
-        return new BaseResponseModel<>(null,"User successfully deleted");
-    }
+//    public BaseResponseModel<UserRepoModel> deleteUserById(String userid) {
+//        UserRepoModel urm = userRepository.findUserById(userid);
+//        userRepository.delete(urm);
+//        return new BaseResponseModel<>(null,"User Account Deleted");
+//    }
+//
+//    public BaseResponseModel<UserResponseModel> getUserById(String id) {
+//        UserRepoModel urm = userRepository.getUserByIdIn(id);
+//
+//        return new BaseResponseModel(new UserResponseModel(urm),"User Account Data");
+//    }
 
-    public BaseResponseModel<UserResponseModel> getUserById(String id) {
-        UserRepoModel urm = userRepository.getUserByIdIn(id);
 
-        return new BaseResponseModel(new UserResponseModel(urm),"User data Fetched Successfully");
-    }
-
-
-    public BaseResponseModel<UserRepoModel> findUserById(String id)  {
-        Optional<UserRepoModel> urm = userRepository.findById(id);
-        BaseResponseModel<UserRepoModel> resp = new BaseResponseModel<>();
-        if (urm.isEmpty()) {
-            resp.setStatusCode(HttpStatus.OK.value());
-            resp.setStatus(true);
-            return new BaseResponseModel<>(null,"User Not Found");
-        }
-
-        return new BaseResponseModel<>(urm.get(),"Fetched successfully");
-    }
+//    public BaseResponseModel<UserRepoModel> findUserById(String id)  {
+//        Optional<UserRepoModel> urm = userRepository.findById(id);
+//        BaseResponseModel<UserRepoModel> resp = new BaseResponseModel<>();
+//        if (urm.isEmpty()) {
+//            resp.setStatusCode(HttpStatus.OK.value());
+//            resp.setStatus(true);
+//            return new BaseResponseModel<>(null,"User Not Found");
+//        }
+//
+//        return new BaseResponseModel<>(urm.get(),"Fetched successfully");
+//    }
 
     public UserRepoModel findUserByEmail(String email) {
         Optional<UserRepoModel> urm = userRepository.findByEmail(email);

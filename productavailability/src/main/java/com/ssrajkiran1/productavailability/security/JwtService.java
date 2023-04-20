@@ -47,7 +47,7 @@ public class JwtService {
                 .claim("name", userRepoModel.getEmail())
                 .setSubject(userRepoModel.getEmail())
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + 3600000))
+                .setExpiration(new Date(System.currentTimeMillis() + 259200000))
                 .signWith(SignatureAlgorithm.HS512, jwtSecretKey)
                 .compact();
 
@@ -57,7 +57,7 @@ public class JwtService {
                 .claim("name", userRepoModel.getEmail())
                 .setSubject(userRepoModel.getEmail())
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + 86400000)) // Expiration time of 24 hours
+                .setExpiration(new Date(System.currentTimeMillis() + 259200000)) // Expiration time of 24 hours
                 .signWith(SignatureAlgorithm.HS512, jwtSecretKey)
                 .compact();
 

@@ -29,6 +29,12 @@ public class ProductModel {
     @JsonProperty("product_availability")
     private int productAvailability;
 
+    public ProductModel(String productName, String brandName, String productDescription) {
+        this.productName =productName;
+        this.brandName =brandName;
+        this.productDescription=productDescription;
+    }
+
 
     public void setId(String id) {
         this.shopId = id;

@@ -24,4 +24,6 @@ public class UserResponseModel {
         this.username = urm.getUsername();
         this.email = urm.getEmail();
     }
+
+
 }

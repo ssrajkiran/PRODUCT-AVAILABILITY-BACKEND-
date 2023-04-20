@@ -1,6 +1,7 @@
 package com.ssrajkiran1.productavailability.repository;
 
 
+import com.ssrajkiran1.productavailability.model.repo.ProductModel;
 import com.ssrajkiran1.productavailability.model.repo.ShopModel;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
@@ -20,6 +21,11 @@ public interface ShopRepository extends MongoRepository<ShopModel, String> {
     ShopModel findByIdIn(List<String> shopIds);
 
     Optional<ShopModel> findByShopNameAndId(String shopName, String shopId);
+   List<ShopModel> getByIdIn(List<String> shopIds);
 
-    List<ShopModel> getByIdIn(List<String> shopIds);
+
+
+
+
+
 }

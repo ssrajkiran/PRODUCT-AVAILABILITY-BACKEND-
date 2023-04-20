@@ -13,22 +13,22 @@ public class ProductController extends BaseController{
     @Autowired
     private ProductService productService;
 
-    @PostMapping("/product")
+    @PostMapping("/createproduct")
     public BaseResponseModel<ProductModel> createProduct(@RequestBody ProductModel productModel) {
         return productService.save(productModel);
     }
 
-    @GetMapping("/product")
+    @GetMapping("/listproduct")
     public BaseResponseModel<List> getAllProduct() {
 
         return productService.getAllProduct();
     }
 
-    @DeleteMapping("/product")
-    public BaseResponseModel<ProductModel> deleteProductById(@PathVariable String product_name,@PathVariable String shop_id) {
-        return  productService.deleteProductById(product_name,shop_id);
-
-    }
+//    @DeleteMapping("/deleteproduct")
+//    public BaseResponseModel<ProductModel> deleteProductById(@PathVariable String product_name,@PathVariable String shop_id) {
+//        return  productService.deleteProductById(product_name,shop_id);
+//
+//    }
 
 
 }
