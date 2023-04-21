@@ -67,24 +67,12 @@ public class UserService {
         return new BaseResponseModel<>(null,"User Account Deleted");
     }
 
-//    public BaseResponseModel<UserResponseModel> getUserById(String id) {
-//        UserRepoModel urm = userRepository.getUserByIdIn(id);
-//
-//        return new BaseResponseModel(new UserResponseModel(urm),"User Account Data");
-//    }
+    public BaseResponseModel<UserResponseModel> getUserById(String id) {
+        UserRepoModel urm = userRepository.getUserByIdIn(id);
 
+        return new BaseResponseModel(new UserResponseModel(urm),"User Account Data");
+    }
 
-//    public BaseResponseModel<UserRepoModel> findUserById(String id)  {
-//        Optional<UserRepoModel> urm = userRepository.findById(id);
-//        BaseResponseModel<UserRepoModel> resp = new BaseResponseModel<>();
-//        if (urm.isEmpty()) {
-//            resp.setStatusCode(HttpStatus.OK.value());
-//            resp.setStatus(true);
-//            return new BaseResponseModel<>(null,"User Not Found");
-//        }
-//
-//        return new BaseResponseModel<>(urm.get(),"Fetched successfully");
-//    }
 
     public UserRepoModel findUserByEmail(String email) {
         Optional<UserRepoModel> urm = userRepository.findByEmail(email);

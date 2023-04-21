@@ -25,5 +25,5 @@ public interface ProductRepository extends MongoRepository<ProductModel, String>
    List<ProductModel> getByProductName(String productName);
 
 
-
+    void deleteByProductNameAndShopId(String productName, String shopId);
 }

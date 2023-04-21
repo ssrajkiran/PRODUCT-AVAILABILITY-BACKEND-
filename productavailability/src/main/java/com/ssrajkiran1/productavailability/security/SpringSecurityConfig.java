@@ -86,9 +86,13 @@ public class SpringSecurityConfig {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
                 .exceptionHandling().authenticationEntryPoint(unauthorizedAuthHandler()).and()
                 .authorizeHttpRequests().requestMatchers("/healthz").permitAll().and()
-//                .authorizeHttpRequests().requestMatchers("/healthz").permitAll().and()
-                .authorizeHttpRequests().requestMatchers("/**").permitAll()
+                .authorizeHttpRequests().requestMatchers("/createuser").permitAll().and()
+                .authorizeHttpRequests().requestMatchers("/**").permitAll().and()
+                .authorizeHttpRequests().requestMatchers("/createuser").hasAnyAuthority("ROOT").and()
+                .authorizeHttpRequests().requestMatchers("/createshop").hasAnyAuthority("ROOT").and()
+                .authorizeHttpRequests().requestMatchers("/createproduct").hasAnyAuthority("ROOT")
                 .anyRequest().authenticated();
+
 
 
         http.authenticationProvider(authenticationProvider());

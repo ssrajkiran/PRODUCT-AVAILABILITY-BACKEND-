@@ -92,7 +92,7 @@ public class ProductService {
 
 
         Optional<ProductModel> productOptional = productRepository.findByProductNameAndShopId(product_name, shop_id);
-    System.out.println(productOptional);
+        System.out.println(productOptional);
         if (productOptional ==null) {
 
             BaseResponseModel<ProductModel> resp = new BaseResponseModel<>();
@@ -103,8 +103,7 @@ public class ProductService {
             return resp;
 
         } else {
-            ProductModel product = productOptional.get();
-            productRepository.delete(product);
+            productRepository.deleteByProductNameAndShopId(product_name, shop_id);
             BaseResponseModel<ProductModel> resp = new BaseResponseModel<>();
             resp.setStatusCode(HttpStatus.OK.hashCode());
             resp.setStatus(true);

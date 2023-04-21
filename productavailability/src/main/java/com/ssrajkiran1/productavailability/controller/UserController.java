@@ -8,6 +8,7 @@ import com.ssrajkiran1.productavailability.service.UserService;
 import io.micrometer.common.util.StringUtils;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,6 +21,7 @@ public class UserController extends BaseController {
 
 
     @PostMapping("/createuser")
+    @PreAuthorize("hasAuthority('ROOT')")
     public BaseResponseModel<UserResponseModel> createUser(@RequestBody @Valid UserRequestModel user) {
         return userService.save(user);
     }
@@ -29,13 +31,12 @@ public class UserController extends BaseController {
         return userService.getAllUsers();
     }
 
-//    @GetMapping("/getuser")
-//    public BaseResponseModel<UserResponseModel> getUserById(@RequestParam String id) {
-//        return userService.getUserById(id);
-//    }
+    @GetMapping("/getuser")
+    public BaseResponseModel<UserResponseModel> getUserById(@RequestParam String id) {
+        return userService.getUserById(id);
+    }
 
     @DeleteMapping("/deleteUser")
-
     public BaseResponseModel<UserRepoModel> deleteUserById(@RequestBody @Valid Map<String, String> requestBody) {
         String userid = requestBody.get("user_id");
         if(StringUtils.isBlank(userid)){

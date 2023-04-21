@@ -31,12 +31,12 @@ public class ProductController extends BaseController{
     public BaseResponseModel<ProductModel> deleteProductById(@RequestBody @Valid Map<String, String> requestBody) {
         String shopId = requestBody.get("shop_id");
         String product_name = requestBody.get("product_name");
-        System.out.println(shopId+"" +product_name);
+        System.out.println(shopId+" contorller" +product_name);
         if(( StringUtils.isBlank(shopId) )|| (StringUtils.isBlank(product_name)) ){
             return new BaseResponseModel<>("Enter your user_id & ProductName");
+        }else {
+            return productService.deleteProductById(product_name, shopId);
         }
-        return  productService.deleteProductById(product_name,shopId);
-
     }
 
 
