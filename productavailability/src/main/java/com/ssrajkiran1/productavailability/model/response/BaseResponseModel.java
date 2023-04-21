@@ -35,6 +35,13 @@ public class BaseResponseModel<T> {
         this.data = data;
     }
 
+    public BaseResponseModel(String Message){
+        this.error =Message;
+        this.status =false;
+        this.statusCode=HttpStatus.OK.value();
+        this.message="Invalid credentials";
+    }
+
 
 
 }

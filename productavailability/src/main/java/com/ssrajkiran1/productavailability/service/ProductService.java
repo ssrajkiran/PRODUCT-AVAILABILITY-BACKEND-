@@ -87,29 +87,30 @@ public class ProductService {
 
 
 
-//    public BaseResponseModel<ProductModel> deleteProductById(String product_name,String shop_id) {
-//
-//
-//        List<ProductModel> getId = productRepository.getByShopIdAndProductName(shop_id,product_name);
-//
-//        if (getId.isEmpty()) {
-//
-//            BaseResponseModel<ProductModel> resp = new BaseResponseModel<>();
-//            resp.setStatusCode(HttpStatus.UNAUTHORIZED.hashCode());
-//            resp.setStatus(false);
-//            resp.setError("Shop Not Found");
-//            resp.setMessage("Shop not deleted!");
-//            return resp;
-//
-//        } else {
-//
-//            shopRepository.deleteById(product_name);
-//            BaseResponseModel<ProductModel> resp = new BaseResponseModel<>();
-//            resp.setStatusCode(HttpStatus.OK.hashCode());
-//            resp.setStatus(true);
-//            resp.setError("");
-//            resp.setMessage("Successfully Product deleted!");
-//            return resp;
-//        }
-//    }
+
+    public BaseResponseModel<ProductModel> deleteProductById(String product_name,String shop_id) {
+
+
+        Optional<ProductModel> productOptional = productRepository.findByProductNameAndShopId(product_name, shop_id);
+    System.out.println(productOptional);
+        if (productOptional ==null) {
+
+            BaseResponseModel<ProductModel> resp = new BaseResponseModel<>();
+            resp.setStatusCode(HttpStatus.UNAUTHORIZED.hashCode());
+            resp.setStatus(false);
+            resp.setError("Shop Not Found");
+            resp.setMessage("Shop not deleted!");
+            return resp;
+
+        } else {
+            ProductModel product = productOptional.get();
+            productRepository.delete(product);
+            BaseResponseModel<ProductModel> resp = new BaseResponseModel<>();
+            resp.setStatusCode(HttpStatus.OK.hashCode());
+            resp.setStatus(true);
+            resp.setError("");
+            resp.setMessage("Successfully Product deleted!");
+            return resp;
+        }
+    }
 }

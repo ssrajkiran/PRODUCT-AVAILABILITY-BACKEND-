@@ -26,7 +26,7 @@ public class MobileController  extends BaseController{
     }
 
         @GetMapping("/product")
-        BaseResponseModel<ProductResponseModel> getProduct(@RequestBody  Map<String, String> requestBody) {
+        BaseResponseModel<Object> getProduct(@RequestBody  Map<String, String> requestBody) {
         String productName = requestBody.get("product_name");
             return service.getProduct(productName);
         }

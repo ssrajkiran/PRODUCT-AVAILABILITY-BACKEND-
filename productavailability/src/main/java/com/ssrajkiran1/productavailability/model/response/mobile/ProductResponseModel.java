@@ -21,15 +21,17 @@ public class ProductResponseModel {
     @JsonProperty("Brand_Name")
     private String BrandName;
 
+    @JsonProperty("Product_description")
+    private String productDescription;
+
     @JsonProperty("shop_details")
-    List<ShopModel> shopDetails;
+    ShopModel shopDetails;
 
 
-    public ProductResponseModel(List<ShopModel> shop, String productName, List<String> brandName) {
-        this.shopDetails = shop;
-        for (String name : brandName) {
-            this.BrandName=name;
-        }
-        this.productName=productName;
+    public ProductResponseModel(String brandName, ShopModel s,String ProductName,String ProductDescription) {
+        this.BrandName = brandName;
+        this.shopDetails=s;
+        this.productName=ProductName;
+        this.productDescription=ProductDescription;
     }
 }

@@ -61,12 +61,12 @@ public class UserService {
 
     }
 
-//    public BaseResponseModel<UserRepoModel> deleteUserById(String userid) {
-//        UserRepoModel urm = userRepository.findUserById(userid);
-//        userRepository.delete(urm);
-//        return new BaseResponseModel<>(null,"User Account Deleted");
-//    }
-//
+    public BaseResponseModel<UserRepoModel> deleteUserById(String userid) {
+        UserRepoModel urm = userRepository.findUserById(userid);
+        userRepository.delete(urm);
+        return new BaseResponseModel<>(null,"User Account Deleted");
+    }
+
 //    public BaseResponseModel<UserResponseModel> getUserById(String id) {
 //        UserRepoModel urm = userRepository.getUserByIdIn(id);
 //
@@ -99,7 +99,6 @@ public class UserService {
 
         return userRepository.existsByEmail(email);
     }
-
 
 
 }

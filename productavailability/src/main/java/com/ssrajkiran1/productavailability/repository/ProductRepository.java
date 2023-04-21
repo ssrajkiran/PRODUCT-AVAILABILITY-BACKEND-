@@ -11,16 +11,13 @@ import java.util.Optional;
 @Repository
 public interface ProductRepository extends MongoRepository<ProductModel, String> {
 
-
-
-    List<ProductModel> findByProductName(String productName);
+    
     Optional<ProductModel> findByProductNameAndShopId(String productName, String shopId);
 
 
 
     ProductModel findByShopIdAndProductName(String shopId, String productName);
-
-    List<ProductModel> getByShopIdAndProductName(String shopId, String productName);
+    
 
 
     List<Object> getByShopId(String shopId);
@@ -28,11 +25,5 @@ public interface ProductRepository extends MongoRepository<ProductModel, String>
    List<ProductModel> getByProductName(String productName);
 
 
-    ProductModel getByProductNameIn(String productName);
 
-    List<ProductModel> getByShopIdIn(String id);
-
-    List<String> getShopIdsByProductName(String productName);
-
-    List<ProductModel> findByIdAndBrandName(List<String> shopIds, List<String> brand);
 }

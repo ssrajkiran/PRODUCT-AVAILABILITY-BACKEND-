@@ -1,14 +1,17 @@
 package com.ssrajkiran1.productavailability.controller;
 
 import com.ssrajkiran1.productavailability.service.ShopService;
+import io.micrometer.common.util.StringUtils;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-import com.ssrajkiran1.productavailability.model.repo.ProductModel;
 import com.ssrajkiran1.productavailability.model.repo.ShopModel;
 import com.ssrajkiran1.productavailability.model.response.BaseResponseModel;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 public class ShopController extends BaseController{
@@ -16,7 +19,7 @@ public class ShopController extends BaseController{
     public ShopService shopService;
 
     @PostMapping("/createshop")
-    public BaseResponseModel<ShopModel> createShop(@RequestBody ShopModel shopDetails) {
+    public BaseResponseModel<ShopModel> createShop(@RequestBody @Valid ShopModel shopDetails) {
 
         return shopService.saveShop(shopDetails);
     }
@@ -30,11 +33,15 @@ public class ShopController extends BaseController{
 
 
 
-//    @DeleteMapping("/deleteshops")
-//    public BaseResponseModel<ShopModel> deleteShopById(@PathVariable String id) {
-//        return shopService.deleteShopById(id);
-//
-//    }
+    @DeleteMapping("/deleteshop")
+    public BaseResponseModel<ShopModel> deleteShopById(@RequestBody @Valid Map<String, String> requestBody)  {
+        String shopId = requestBody.get("shop_id");
+        if(StringUtils.isBlank(shopId)){
+            return new BaseResponseModel<>("Enter your ShopId");
+        }
+        return shopService.deleteShopById(shopId);
+
+    }
 
 
 }

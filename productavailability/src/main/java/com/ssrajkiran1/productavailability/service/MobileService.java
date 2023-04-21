@@ -59,8 +59,8 @@ public class MobileService extends BaseController {
     }
 
 
-    public BaseResponseModel<ProductResponseModel> getProduct(String productName) {
-        BaseResponseModel<ProductResponseModel> resp = new BaseResponseModel<>();
+    public BaseResponseModel<Object> getProduct(String productName) {
+        BaseResponseModel<Object> resp = new BaseResponseModel<>();
 
         List<ProductModel> product = productRepository.getByProductName(productName);
 
@@ -80,19 +80,35 @@ public class MobileService extends BaseController {
             for (ProductModel p : product) {
                 brandname = product.stream().map(ProductModel::getBrandName).collect(Collectors.toList());
             }
+            List<String> description = null;
+            for (ProductModel p : product) {
+                description = product.stream().map(ProductModel::getProductDescription).collect(Collectors.toList());
+            }
 
             List<ShopModel> shop = shopRepository.getByIdIn(shopIds);
+            List<Object> productShops = new ArrayList<>();
+//            for (ShopModel s : shop) {
+//
+//              for (String brandName : brandname) {
+//
+//                    for(String productDescription : description) {
+//                       productShops.add(new ProductResponseModel(brandName, s, productName, productDescription));
+//                    }
+//                }
+//            }
+            for (int i = 0; i < shop.size() && i < brandname.size() && i < description.size(); i++) {
+                ShopModel s = shop.get(i);
+                String brandName = brandname.get(i);
+                String productDescription = description.get(i);
+                productShops.add(new ProductResponseModel(brandName, s, productName, productDescription));
+            }
 
 
-            ProductResponseModel merge= new ProductResponseModel();
-            merge = new ProductResponseModel(shop,productName,brandname);
-
-
-            resp.setData(merge);
+            resp.setData(productShops);
             resp.setStatusCode(HttpStatus.OK.hashCode());
             resp.setStatus(true);
             resp.setError("");
-            resp.setMessage("Database Fetched Successfully");
+            resp.setMessage("Shop List Having the Product");
 
 
         }

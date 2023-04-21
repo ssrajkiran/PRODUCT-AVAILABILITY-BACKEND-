@@ -49,27 +49,27 @@ public class ShopService {
     }
 
 
-//    public BaseResponseModel<ShopModel> deleteShopById(String id) {
-//        Optional<ShopModel> getId = shopRepository.findById(id);
-//        if (getId.isEmpty()) {
-//
-//            BaseResponseModel<ShopModel> resp = new BaseResponseModel<>();
-//            resp.setStatusCode(HttpStatus.UNAUTHORIZED.hashCode());
-//            resp.setStatus(false);
-//            resp.setError("Shop Not Found");
-//            resp.setMessage("Shop not deleted!");
-//            return resp;
-//
-//        } else {
-//            shopRepository.deleteById(id);
-//            BaseResponseModel<ShopModel> resp = new BaseResponseModel<>();
-//            resp.setStatusCode(HttpStatus.OK.hashCode());
-//            resp.setStatus(true);
-//            resp.setError("");
-//            resp.setMessage("Successfully Account deleted!");
-//            return resp;
-//        }
-//    }
+    public BaseResponseModel<ShopModel> deleteShopById(String id) {
+        Optional<ShopModel> getId = shopRepository.findById(id);
+        if (getId.isEmpty()) {
+
+            BaseResponseModel<ShopModel> resp = new BaseResponseModel<>();
+            resp.setStatusCode(HttpStatus.UNAUTHORIZED.hashCode());
+            resp.setStatus(false);
+            resp.setError("Shop Not Found");
+            resp.setMessage("Shop not deleted!");
+            return resp;
+
+        } else {
+            shopRepository.deleteById(id);
+            BaseResponseModel<ShopModel> resp = new BaseResponseModel<>();
+            resp.setStatusCode(HttpStatus.OK.hashCode());
+            resp.setStatus(true);
+            resp.setError("");
+            resp.setMessage("Successfully Account deleted!");
+            return resp;
+        }
+    }
 
 
 
@@ -94,8 +94,8 @@ public class ShopService {
         } else {
             BaseResponseModel<ShopModel> resp = new BaseResponseModel<>();
             resp.setStatusCode(HttpStatus.UNAUTHORIZED.value());
-            resp.setStatus(false);
-            resp.setError("ShopIdError");
+            resp.setStatus(true);
+            resp.setError("ShopIdExists");
             resp.setMessage("Shop Already Exists");
 
             return resp;

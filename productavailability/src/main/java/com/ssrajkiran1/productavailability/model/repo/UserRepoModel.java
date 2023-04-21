@@ -6,8 +6,7 @@ import org.apache.logging.log4j.core.config.plugins.validation.constraints.NotBl
 import org.bson.codecs.pojo.annotations.BsonId;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotNull;
+
 import java.util.List;
 
 
@@ -22,13 +21,14 @@ public class UserRepoModel {
     @BsonId
     @JsonProperty("user_id")
     private String id;
+
     @JsonProperty("user_name")
     private String username;
+
     @JsonProperty("user_email")
-
     private String email;
-    @JsonProperty("password")
 
+    @JsonProperty("password")
     private String password;
 
     private List<UserRoles> userRoles;
