@@ -1,0 +1,60 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+//  
+model user {
+  id            Int       @id @default(autoincrement())
+  uuid          String    @unique @default(uuid()) @db.Uuid
+  name          String    @db.VarChar()
+  email_address String    @unique @db.VarChar(50)
+  mobile_number Int       @db.Integer()
+  password      String?   @db.VarChar()
+  is_first_time Boolean   @default(true)
+  // user_type     Int       @db.Integer
+  // User_type     user_type @relation(fields: [user_type], references: [id])
+  status        Boolean   @default(true)
+  created_at    DateTime  @default(now())
+  updated_at    DateTime  @updatedAt
+  deleted_at    DateTime? @db.Timestamp(6)
+}
+
+model shop {
+  id            Int       @id @unique @default(autoincrement())
+  uuid          String    @unique @default(uuid()) @db.Uuid
+  name          String    @unique @db.VarChar()
+  website       String    @db.VarChar()
+  mobile_number Int       @db.Integer()
+  coords        Json
+  email_address String    @db.VarChar(50)
+  status        Boolean   @default(true)
+  created_at    DateTime  @default(now())
+  updated_at    DateTime  @updatedAt
+  deleted_at    DateTime? @db.Timestamp(6)
+  Products      product[] @relation("shop_products")
+}
+
+model product {
+  id           Int       @id @default(autoincrement())
+  uuid         String    @unique @default(uuid()) @db.Uuid
+  product_name String    @db.VarChar()
+  brand_name   String    @db.VarChar()
+  availability Boolean   @default(true)
+  shop_id      Int       @db.Integer
+  status       Boolean   @default(true)
+  created_at   DateTime  @default(now())
+  updated_at   DateTime  @updatedAt
+  deleted_at   DateTime? @db.Timestamp(6)
+  shop         shop      @relation("shop_products", fields: [shop_id], references: [id])
+}
+
+enum login_type {
+  facebook
+  google
+  others
+}
