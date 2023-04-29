@@ -11,10 +11,10 @@ async function bootstrap() {
         const app = await core_1.NestFactory.create(app_module_1.AppModule);
         app.enableCors();
         const config = new swagger_1.DocumentBuilder()
-            .setTitle('TODI')
-            .setDescription('The TODI API description')
+            .setTitle('ProductFinder')
+            .setDescription('The ProductFinder API description')
             .setVersion('1.0')
-            .addTag('TODI').addBearerAuth({ type: 'http', scheme: 'bearer', bearerFormat: 'JWT' }, 'access-token')
+            .addTag('ProductFinder').addBearerAuth({ type: 'http', scheme: 'bearer', bearerFormat: 'JWT' }, 'access-token')
             .build();
         const document = swagger_1.SwaggerModule.createDocument(app, config);
         app.useGlobalPipes(new common_1.ValidationPipe({ whitelist: true, transform: true }));
