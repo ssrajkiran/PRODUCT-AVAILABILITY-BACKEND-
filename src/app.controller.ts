@@ -15,7 +15,6 @@ import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import { ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { Request, Response } from 'express';
 import { AppService } from './app.service';
-import { FilesUploadDto } from './dto/appDto';
 import { JwtRefreshGuard } from './helpers/jwt/jwt-refresh.auth.guard';
 import response, { responseDto } from './helpers/response';
 import { STATUS_CODE } from './helpers/statusCode';
@@ -27,28 +26,6 @@ export class AppController {
   @Get()
   checkServer(): Promise<responseDto> {
     return this.appService.checkServer();
-  }
-  @ApiTags('upload')
-  @Post('upload')
-  @ApiConsumes('multipart/form-data')
-  @UseInterceptors(FileFieldsInterceptor([{ name: 'files', maxCount: 10 }]))
-  async uploadFile(
-    @Body() body: FilesUploadDto,
-    @UploadedFiles()
-    files: {
-      files?: Express.Multer.File[];
-    },
-  ) {
-    let data = await this.appService.uploadS3(files.files);
-    return data;
-  }
-  @ApiTags('upload')
-  @Delete('upload')
-  async deleteFile(@Query('key') Param: string) {
-    console.log(Param);
-
-    let del = await this.appService.deleteS3(Param);
-    return del;
   }
   @ApiTags('refresh')
   @Get('refresh')
