@@ -27,6 +27,28 @@ export class AppController {
   checkServer(): Promise<responseDto> {
     return this.appService.checkServer();
   }
+  // @ApiTags('upload')
+  // @Post('upload')
+  // @ApiConsumes('multipart/form-data')
+  // @UseInterceptors(FileFieldsInterceptor([{ name: 'files', maxCount: 10 }]))
+  // async uploadFile(
+  //   @Body() body: FilesUploadDto,
+  //   @UploadedFiles()
+  //   files: {
+  //     files?: Express.Multer.File[];
+  //   },
+  // ) {
+  //   let data = await this.appService.uploadS3(files.files);
+  //   return data;
+  // }
+  // @ApiTags('upload')
+  // @Delete('upload')
+  // async deleteFile(@Query('key') Param: string) {
+  //   console.log(Param);
+
+  //   let del = await this.appService.deleteS3(Param);
+  //   return del;
+  // }
   @ApiTags('refresh')
   @Get('refresh')
   @UseGuards(JwtRefreshGuard)
